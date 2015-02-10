@@ -1,0 +1,117 @@
+using UnityEngine;
+using System.Collections;
+
+public class RandomBlocks : MonoBehaviour {
+
+	public Transform block;
+	public int tempJ;
+	private float nextBlockTime = 0.0f;
+	public float spawnRate;
+	public Vector3 tempStartposition;
+	public ArrayList blockPositionValue = new ArrayList();
+
+
+	// Use this for initialization
+	void Start () {
+		// initiate positon and color
+		tempStartposition = transform.position;
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+		int numberOfBlocks = GameObject.FindGameObjectsWithTag("Block").Length;
+	
+		if (nextBlockTime < Time.time &&
+		    numberOfBlocks < 40) {
+
+
+			spwanBlock ();
+			nextBlockTime = Time.time + spawnRate;	
+			
+						}
+
+		if (numberOfBlocks > 99) {
+				
+			foreach(Vector3 i in blockPositionValue)
+			{
+				Debug.Log(i);
+
+			}
+			
+		}
+		
+	}
+	
+	void spwanBlock(){
+
+		//update block start position whith last one of last loop
+		Vector3 blockPosition = tempStartposition; 
+
+
+		int j = 0;
+
+
+		for (int i=0; i < 10; i++) {
+			
+			j = Random.Range(1,7);
+
+				// avoid block at spawned back to same position
+				
+				while(Mathf.Abs(j-tempJ) == 3)
+				{
+					j = Random.Range(1,7);
+				}
+				
+				if(Mathf.Abs(j-tempJ) != 3){
+					
+					switch(j){
+					case 1:
+						blockPosition.x ++;
+						break;
+					case 2:
+						blockPosition.y ++;
+						break;
+					case 3:
+						blockPosition.z ++;
+						break;
+					case 4:
+						blockPosition.x --;
+						break;
+					case 5:
+						blockPosition.y --;
+						break;
+					case 6:
+						blockPosition.z --;
+						break;
+						
+					}
+
+				}
+
+
+			
+			tempJ = j;
+
+
+			block.renderer.material.color = Color.green;
+			
+			
+			block.name = "block" + i;
+
+			blockPositionValue.Add(blockPosition);
+			
+			
+			Instantiate(block,blockPosition, Quaternion.identity);
+
+			//transform.position;
+		
+		}
+
+		tempStartposition = blockPosition;
+
+
+	}
+}
+
